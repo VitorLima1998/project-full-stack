@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/sync-database', async (req, res) => {
   try {
-    const updateDb = await productController.syncDatabase();
+    const updateDb = await productController.syncDatabase(req, res);
     res.json({ success: true, data: updateDb });
   } catch (error) {
     res.status(500).json({ error });
@@ -14,7 +14,7 @@ router.get('/sync-database', async (req, res) => {
 
 router.get('/list-products', async (req, res) => {
   try {
-    const products = await productController.getAll();
+    const products = await productController.getAll(req, res);
     res.json({ success: true, data: products });
   } catch (error) {
     res.status(500).json({ error });
