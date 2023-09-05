@@ -3,6 +3,8 @@ const { PrismaClient } = require('../prisma/generated/client');
 const dotenv = require('dotenv-safe');
 dotenv.config();
 
+const prisma = new PrismaClient();
+
 module.exports = {
   // -------------------------------------------REGISTER-------------------------------------------
 
@@ -26,7 +28,9 @@ module.exports = {
       },
     });
 
-    return res.status(200)({ message: 'User created successfully!', newUser });
+    return res
+      .status(200)
+      .json({ message: 'User created successfully!', newUser });
   },
 
   // -------------------------------------------LOGIN-------------------------------------------
