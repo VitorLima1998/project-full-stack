@@ -15,8 +15,6 @@ module.exports = {
       },
     });
 
-    // console.log('USER ALREADY EXISTS', existingUser);
-
     if (existingUser) {
       return res.status(400).json({ error: 'User already exists' });
     }
@@ -28,11 +26,7 @@ module.exports = {
       },
     });
 
-    // console.log('USER', newUser);
-
-    return res
-      .status(200)
-      .json({ message: 'User created successfully!', data: newUser });
+    return res.status(200)({ message: 'User created successfully!', newUser });
   },
 
   // -------------------------------------------LOGIN-------------------------------------------
