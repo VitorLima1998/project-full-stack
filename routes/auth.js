@@ -6,28 +6,26 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   try {
-    const register = await authController.register(req, res);
-    res.json({ success: true, data: register });
+    await authController.register(req, res);
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json({ success: false, error });
   }
 });
 
 router.post('/login', async (req, res) => {
   try {
-    const login = await authController.login(req, res);
-    res.json({ success: true, data: login });
+    await authController.login(req, res);
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json({ success: false, error });
   }
 });
 
 router.post('/logout', verifyJWT, async (req, res) => {
   try {
-    const logout = await authController.logout(req, res);
-    res.json({ success: true, data: logout });
+    await authController.logout(req, res);
   } catch (error) {
-    res.status(500).json({ error });
+    console.log(error);
+    res.status(500).json({ success: false, error });
   }
 });
 
