@@ -160,6 +160,7 @@ const config = {
     "db"
   ],
   "activeProvider": "mysql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -169,7 +170,8 @@ const config = {
     }
   },
   "inlineSchema": "Z2VuZXJhdG9yIGNsaWVudCB7CiAgcHJvdmlkZXIgPSAicHJpc21hLWNsaWVudC1qcyIKICBvdXRwdXQgICA9ICIuL2dlbmVyYXRlZC9jbGllbnQiCn0KCmRhdGFzb3VyY2UgZGIgewogIHByb3ZpZGVyID0gIm15c3FsIgogIHVybCAgICAgID0gZW52KCJEQVRBQkFTRV9VUkwiKQp9Cgptb2RlbCBQcm9kdWN0IHsKICBpZCAgICAgICAgICAgICAgICAgSW50ICAgICAgIEBpZCBAZGVmYXVsdChhdXRvaW5jcmVtZW50KCkpCiAgdGl0bGUgICAgICAgICAgICAgIFN0cmluZz8KICBkZXNjcmlwdGlvbiAgICAgICAgU3RyaW5nPwogIHByaWNlICAgICAgICAgICAgICBGbG9hdD8KICBkaXNjb3VudFBlcmNlbnRhZ2UgRmxvYXQ/CiAgcmF0aW5nICAgICAgICAgICAgIEZsb2F0PwogIHN0b2NrICAgICAgICAgICAgICBJbnQ/CiAgYnJhbmQgICAgICAgICAgICAgIFN0cmluZz8KICBjYXRlZ29yeSAgICAgICAgICAgU3RyaW5nPwogIHRodW1ibmFpbCAgICAgICAgICBTdHJpbmc/CiAgaW1hZ2VzICAgICAgICAgICAgIFN0cmluZz8KfQoKbW9kZWwgVXNlciB7IAogIGlkICAgICAgICAgICAgICAgICBJbnQgICAgICAgQGlkIEBkZWZhdWx0KGF1dG9pbmNyZW1lbnQoKSkKICB1c2VybmFtZSAgICAgICAgICAgU3RyaW5nPyAgIEB1bmlxdWUKICBwYXNzd29yZCAgICAgICAgICAgU3RyaW5nPwp9",
-  "inlineSchemaHash": "01544cc37772419f3402fe93768aeb86be882dc80cb6d198703eb5bd3fcb1f97"
+  "inlineSchemaHash": "01544cc37772419f3402fe93768aeb86be882dc80cb6d198703eb5bd3fcb1f97",
+  "noEngine": false
 }
 
 const fs = require('fs')
