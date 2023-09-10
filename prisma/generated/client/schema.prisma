@@ -8,6 +8,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Image {
+  id     Int      @id @default(autoincrement())
+  url    String
+  productId Int
+  product Product @relation(fields: [productId], references: [id])
+}
+
 model Product {
   id                 Int       @id @default(autoincrement())
   title              String?
@@ -19,7 +26,7 @@ model Product {
   brand              String?
   category           String?
   thumbnail          String?
-  images             String?
+  images             Image[]
 }
 
 model User { 
