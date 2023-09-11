@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const { PrismaClient } = require('../prisma/generated/client');
 const dotenv = require('dotenv-safe');
 dotenv.config();
@@ -21,10 +22,13 @@ module.exports = {
       return res.status(400).json({ error: 'User already exists' });
     }
 
+    const saltRounds = 10;
+    const hashPassword = await bcrypt.hash(password, saltRounds);
+
     const newUser = await prisma.user.create({
       data: {
         username: username,
-        password: password,
+        password: hashPassword,
       },
     });
 
@@ -44,10 +48,16 @@ module.exports = {
       },
     });
 
-    if (!user || user.password !== password) {
+    if (!user) {
+      return res.status(401).json({ auth: false, error: 'User not found' });
+    }
+
+    const comparePass = await bcrypt.compare(password, user.password);
+
+    if (!comparePass) {
       return res
         .status(401)
-        .json({ auth: false, error: 'Invalid credencials' });
+        .json({ auth: false, error: 'Invalid credentials' });
     }
 
     const id = user.id;
