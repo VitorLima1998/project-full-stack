@@ -1,84 +1,37 @@
-import axios from 'axios';
-import { PrismaClient } from '../prisma/generated/client';
+import express from 'express';
+import producService from '../services/productService';
+import verifyJWT from '../middlewares/verifyJWT';
 import { Request, Response } from 'express';
 
-const prisma = new PrismaClient();
+const router = express.Router();
 
-export default {
-  syncDatabase: async () => {
-    const products = (await axios.get('https://dummyjson.com/products')).data;
+router.get('/sync-database', async (req: Request, res: Response) => {
+  try {
+    const updateDb = await producService.syncDatabase();
+    res.json({ data: updateDb });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error });
+  }
+});
 
-    await Promise.all(
-      products.products.map(async (product) => {
-        await prisma.product.create({
-          data: {
-            title: product.title,
-            description: product.description,
-            price: product.price,
-            discountPercentage: product.discountPercentage,
-            rating: product.rating,
-            stock: product.stock,
-            brand: product.brand,
-            category: product.category,
-            thumbnail: product.thumbnail,
-            images: {
-              create: product.images.map((imageUrl: string) => ({
-                url: imageUrl,
-              })),
-            },
-          },
-        });
-      })
-    );
-    return products;
-  },
+router.get('/list-products', async (req: Request, res: Response) => {
+  try {
+    const products = await producService.getAll();
+    res.json({ data: products });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+});
 
-  getAll: async () => {
-    const products = await prisma.product.findMany({
-      include: {
-        images: true,
-      },
-    });
-    return products;
-  },
+router.post('/add-products', verifyJWT, async (req: Request, res: Response) => {
+  try {
+    const product = await producService.create(req, res);
+    res.status(200).json({ data: product });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error });
+  }
+});
 
-  create: async (req: Request, res: Response) => {
-    const {
-      title,
-      description,
-      price,
-      discountPercentage,
-      rating,
-      stock,
-      brand,
-      category,
-      thumbnail,
-      images,
-    } = req.body;
-
-    const newProduct = await prisma.product.create({
-      data: {
-        title,
-        description,
-        price,
-        discountPercentage,
-        rating,
-        stock,
-        brand,
-        category,
-        thumbnail,
-        images: {
-          createMany: {
-            data: images.map((imageUrl: string) => ({
-              url: imageUrl,
-            })),
-          },
-        },
-      },
-      include: {
-        images: true,
-      },
-    });
-    return newProduct;
-  },
-};
+export default router;

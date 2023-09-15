@@ -5,8 +5,8 @@ const port = 3000;
 
 import bodyParser from 'body-parser';
 // import routes from './routes';
-import authRoutes from './routes/auth';
-import productRoutes from './routes/product';
+import authRoutes from './controllers/authController';
+import productRoutes from './controllers/productController';
 
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', 'http://localhost:3001');
