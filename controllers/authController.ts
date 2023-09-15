@@ -1,15 +1,17 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const { PrismaClient } = require('../prisma/generated/client');
-const dotenv = require('dotenv-safe');
+import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import { PrismaClient } from '../prisma/generated/client';
+import dotenv from 'dotenv-safe';
 dotenv.config();
+
 
 const prisma = new PrismaClient();
 
-module.exports = {
+export default {
   // -------------------------------------------REGISTER-------------------------------------------
 
-  register: async (req, res) => {
+  register: async (req: Request, res: Response) => {
     const { username, password } = req.body;
 
     const existingUser = await prisma.user.findUnique({
@@ -39,7 +41,7 @@ module.exports = {
 
   // -------------------------------------------LOGIN-------------------------------------------
 
-  login: async (req, res) => {
+  login: async (req: Request, res: Response) => {
     const { username, password } = req.body;
 
     const user = await prisma.user.findUnique({
@@ -52,7 +54,15 @@ module.exports = {
       return res.status(401).json({ auth: false, error: 'User not found' });
     }
 
-    const comparePass = await bcrypt.compare(password, user.password);
+    const userPassword = user.password;
+
+    if (!userPassword) {
+      return res
+        .status(401)
+        .json({ auth: false, error: 'User password not set' });
+    }
+
+    const comparePass = await bcrypt.compare(password, userPassword);
 
     if (!comparePass) {
       return res
@@ -61,16 +71,10 @@ module.exports = {
     }
 
     const id = user.id;
-    const token = jwt.sign({ id }, process.env.SECRET, {
+    const token = jwt.sign({ id }, process.env.SECRET as any, {
       expiresIn: process.env.TIMEOUT,
     });
 
     return res.status(200).json({ auth: true, token: token });
-  },
-
-  // -------------------------------------------LOGOUT-------------------------------------------
-
-  logout: async (req, res) => {
-    return res.status(200).json({ auth: false, token: null });
   },
 };

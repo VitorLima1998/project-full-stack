@@ -1,9 +1,10 @@
-const axios = require('axios');
-const { PrismaClient } = require('../prisma/generated/client');
+import axios from 'axios';
+import { PrismaClient } from '../prisma/generated/client';
+import { Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
-module.exports = {
+export default {
   syncDatabase: async () => {
     const products = (await axios.get('https://dummyjson.com/products')).data;
 
@@ -21,7 +22,7 @@ module.exports = {
             category: product.category,
             thumbnail: product.thumbnail,
             images: {
-              create: product.images.map((imageUrl) => ({
+              create: product.images.map((imageUrl: string) => ({
                 url: imageUrl,
               })),
             },
@@ -29,7 +30,6 @@ module.exports = {
         });
       })
     );
-
     return products;
   },
 
@@ -40,5 +40,45 @@ module.exports = {
       },
     });
     return products;
+  },
+
+  create: async (req: Request, res: Response) => {
+    const {
+      title,
+      description,
+      price,
+      discountPercentage,
+      rating,
+      stock,
+      brand,
+      category,
+      thumbnail,
+      images,
+    } = req.body;
+
+    const newProduct = await prisma.product.create({
+      data: {
+        title,
+        description,
+        price,
+        discountPercentage,
+        rating,
+        stock,
+        brand,
+        category,
+        thumbnail,
+        images: {
+          createMany: {
+            data: images.map((imageUrl: string) => ({
+              url: imageUrl,
+            })),
+          },
+        },
+      },
+      include: {
+        images: true,
+      },
+    });
+    return newProduct;
   },
 };

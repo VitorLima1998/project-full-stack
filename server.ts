@@ -1,12 +1,12 @@
-const express = require('express');
-const http = require('http');
+import express from 'express';
+import http from 'http';
 const app = express();
 const port = 3000;
 
-const bodyParser = require('body-parser');
-const routes = require('./routes');
-const authRoutes = require('./routes/auth');
-const productRoutes = require('./routes/product');
+import bodyParser from 'body-parser';
+// import routes from './routes';
+import authRoutes from './routes/auth';
+import productRoutes from './routes/product';
 
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', 'http://localhost:3001');
@@ -19,7 +19,7 @@ app.use(function (req, res, next) {
 
 app.use(bodyParser.json());
 
-app.use('/', routes);
+// app.use('/', routes);
 app.use('/auth', authRoutes);
 app.use('/product', productRoutes);
 
